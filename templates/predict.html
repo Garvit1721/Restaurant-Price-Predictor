@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato Restaurant Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Zomato Restaurant Price Prediction</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="Online Order">Online Order</label>
+            <select id="Online Order" name="Online Order">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Table Book">Table Book</label>
+            <select id="Table Book" name="Table Book">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Ratings">Ratings</label>
+            <input type="number" step="0.1" id="Ratings" name="Ratings" required>
+        </div>
+
+        <div class="form-group">
+            <label for="Votes">Votes</label>
+            <input type="number" id="Votes" name="Votes" required>
+        </div>
+
+        <div class="form-group">
+            <label for="Location">Location</label>
+            <select id="Location" name="Location">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Koramangala 4th Block">Koramangala 4th Block</option>
+                <option value="Kammanahalli">Kammanahalli</option>
+                <option value="Koramangala">Koramangala</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Restaurant Type">Restaurant Type</label>
+            <select id="Restaurant Type" name="Restaurant Type">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Cafe">Cafe</option>
+                <option value="Casual Dining">Casual Dining</option>
+                <option value="Delivery">Delivery</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Cuisines">Cuisines</label>
+            <select id="Cuisines" name="Cuisines">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Italian">Italian</option>
+                <option value="Seafood">Seafood</option>
+                <option value="Andhra">Andhra</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+
+        <button type="submit">Predict Price</button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        <h2>Price Prediction Result</h2>
+        <p>Predicted Price: {{ result[0] }}</p>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

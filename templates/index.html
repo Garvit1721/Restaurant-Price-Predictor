@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato Restaurants Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Styles for select dropdown */
+        select#graph_needed {
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            appearance: none;
+            background-color: #fff;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23424242" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position-x: calc(100% - 8px);
+            background-position-y: center;
+            padding-right: 30px;
+            cursor: pointer;
+        }
+
+        /* Styles for submit button */
+        input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Style for the new button */
+        .predict-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .predict-button a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .predict-button a:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        canvas {
+            margin-top: 20px;
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ZOMATO DATA VIEWER</h1>
+        <form method="POST">
+            <select name="graph_needed" id="graph_needed">
+                <option value="" disabled selected>Select an Option</option>
+                <option value="Top 5 Casual Dining Restaurants">Top 5 Casual Dining Restaurants</option>
+                <option value="Top 5 Cafes">Top 5 Cafes</option>
+                <option value="Top 5 Bakeries">Top 5 Bakeries</option>
+                <option value="Top 5 Quick Bites Restaurants">Top 5 Quick Bites Restaurants</option>
+                <option value="Top 5 Dessert Parlor">Top 5 Dessert Parlor</option>
+                <option value="Top 5 Restaurants : range - (100-1000)">Top 5 Restaurants : range - (100-1000)</option>
+                <option value="Top 5 Restaurants : range - (1000-2000)">Top 5 Restaurants : range - (1000-2000)</option>
+                <option value="Top 5 Restaurants : range - (2000-3000)">Top 5 Restaurants : range - (2000-3000)</option>
+                <option value="Top 5 Restaurants : range - (3000-4000)">Top 5 Restaurants : range - (3000-4000)</option>
+                <option value="Top 5 Restaurants : range - (4000-5000)">Top 5 Restaurants : range - (4000-5000)</option>
+                <option value="Top 5 Restaurants : range - (5000-6000)">Top 5 Restaurants : range - (5000-6000)</option>
+                <option value="Most famous restaurants chains in Bangaluru">Most famous restaurants chains in Bangaluru</option>
+                <option value="Types of Restaurant">Types of Restaurant</option>
+                <option value="Top 5 Restaurants : North Indian">Top 5 Restaurants : North Indian</option>
+                <option value="Top 5 Restaurants : Chinese">Top 5 Restaurants : Chinese</option>
+                <option value="Top 5 Restaurants : Continental">Top 5 Restaurants : Continental</option>
+            </select>
+            <br><br>
+            <input type="submit" value="Show Graph">
+        </form>
+
+        {% if data != "Top 5 Casual Dining Restaurants" %}
+        <h2>{{ data.title }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ data.x_label }}</th>
+                    <th>{{ data.y_label }}</th>
+                    {% if data.x_annt is not none %}
+                    <th>Additional Info</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for index in range(data.x|length) %}
+                <tr>
+                    <td>{{ data.x[index] }}</td>
+                    <td>{{ data.y[index] }}</td>
+                    {% if data.x_annt is not none %}
+                    <td>{{ data.x_annt[index] }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <canvas id="myChart"></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var ctx = document.getElementById('myChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ data.x|tojson }},
+                        datasets: [{
+                            label: '{{ data.y_label }}',
+                            data: {{ data.y|tojson }},
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '{{ data.y_label }}'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+        {% endif %}
+
+        <!-- Add the button for prediction page -->
+        <div class="predict-button">
+            <a href="/predict">Go to Prediction</a>
+        </div>
+    </div>
+</body>
+</html>
